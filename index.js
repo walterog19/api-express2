@@ -32,7 +32,7 @@ app.use(express.json()); // recibir informaciòn en formato json
 
 app.get("/users",  (request, response) => {
 
-    response.send(`Ruta de usuario fecha :${new Date(Date.now()).toLocaleString()}`);
+    response.status(200).send(users);
 
 
 });
@@ -93,10 +93,6 @@ app.route("/users/:username")
 });
 
 
-
-
-
-
 app.route("/users")
     .get((req,res)=>{
         res.send(users);
@@ -110,23 +106,18 @@ app.route("/users")
         }
         console.log(users);
 
-        const find = users.find(u=>u.email === user.email);
+        const find = users.find(u=>u.username === user.username);
         console.log(find);
         if (find == undefined){
             users.push(user);
            
-            res.status(200).send(` Se creo el  usuario :${user.name}`);
+            res.status(200).send(` Se creo el  usuario :${user.username}`);
             
         }else{
-            res.status(500).send(`El usaurio  :${user.name} ya existe!!`);
+            res.status(500).send(`El usaurio  :${user.username} ya existe!!`);
         }   
     })
-    .put((req,res)=>{
-
-    })
-    .delete((req,res)=>{
-
-    });
+   ;
 
 
 app.get("/tweets",  (request, response) => {
