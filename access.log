@@ -32,3 +32,23 @@
 2020-9-22 20:56:35 PUT /users/waltero [object Object] ::1
 2020-9-22 21:00:39 POST /users/ [object Object] ::1
 2020-9-22 21:00:44 PUT /users/waltero [object Object] ::1
+24/9/2020, 4:18:12 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:18:28 p. m. GET /users/waltero [object Object] ::1
+24/9/2020, 4:18:36 p. m. PUT /users/waltero [object Object] ::1
+24/9/2020, 4:19:50 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:20:04 p. m. GET /users/ [object Object] ::1
+24/9/2020, 4:20:50 p. m. GET /users/ [object Object] ::1
+24/9/2020, 4:20:54 p. m. GET /users/ [object Object] ::1
+24/9/2020, 4:21:08 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:21:11 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:21:17 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:21:24 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:21:30 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:23:33 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:23:37 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:23:41 p. m. POST /users/ [object Object] ::1
+24/9/2020, 4:23:45 p. m. GET /users/ [object Object] ::1
+24/9/2020, 4:24:19 p. m. DELETE /users/waltero [object Object] ::1
+24/9/2020, 7:32:40 p. m. POST /users/ [object Object] ::1
+24/9/2020, 9:13:26 p. m. POST /users/ [object Object] ::1
+24/9/2020, 9:13:48 p. m. GET /users/ [object Object] ::1
