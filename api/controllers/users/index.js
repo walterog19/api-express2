@@ -1,4 +1,7 @@
 const users = require("./../../models/users");
+const bcrypt = require("bcryptjs");// bcrypt / bcryptjs
+const config = require('./../../../config');
+const response  = require("./../../lib/response");
 
 const getUser = (req,res)=>{
     const  username =req.params.username;
@@ -6,10 +9,10 @@ const getUser = (req,res)=>{
     const findUser = users.find(u=>u.username === username);
     if (findUser == undefined){
        
-        res.status(500).send(`El usaurio  :${username} no existe existe!!`);
+        res.json(reponse(false,undefined,`El usaurio  :${username} no existe existe!!`));
     }else{
              
-        res.status(200).send(findUser);
+        res.json(response(true,[findUser]));
     }   
 };
 
@@ -18,12 +21,12 @@ const deleteUser = (req,res) =>{
     const find = users.find(u=>u.username === username);
     if (find == undefined){
 
-        res.status(500).send(`El usuario  :${username} no existe!!`);      
+        res.json(response(false,undefined,`El usuario  :${username} no existe!!`));      
         
     }else{
     const findUsers = users.filter(u => u.username != username);
     users  = findUsers;
-    res.status(200).send(users);
+    res.json(response(true, users));
     }
      
 
@@ -41,7 +44,7 @@ const updateUser = (req,res) =>{
     const find = users.find(u=>u.username === username)
     if (find == undefined){
 
-        res.status(500).send(`El usaurio  :${username} no existe!!`)
+        res.json(response(false,undefined,`El usuario  :${username} no existe!!`))
         
         
     }else{
@@ -49,33 +52,37 @@ const updateUser = (req,res) =>{
         console.log(findUsers)
         users  = findUsers
         users.push(user)
-        res.status(200).send(users);
+        res.json(response(true, users));
     }   
 
 };
 
 const getUsers = (req,res)=>{
-    res.send(users);
+    res.json(response(true,users));
 };
 
 const createUser = (req,res)=>{
+    console.log(Number(config.saltRounds))
+    console.log(req.body.passw)
+    const salt = bcrypt.genSaltSync(Number(config.saltRounds));
+    const claveEncriptada = bcrypt.hashSync(req.body.passw, salt);
+
     const user ={
         name: req.body.name,
         username :req.body.username,
         email :req.body.email,
-        passw :req.body.passw,
+        passw :claveEncriptada,
     }
     console.log(users);
 
     const find = users.find(u=>u.username === user.username);
-    console.log(find);
     if (find == undefined){
         users.push(user);
        
-        res.status(200).send(` Se creo el  usuario :${user.username}`);
+        res.json(response(true, [user]));
         
     }else{
-        res.status(500).send(`El usaurio  :${user.username} ya existe!!`);
+        res.json(response(false,undefine, `El usuario  :${user.username} ya existe!!`));
     }   
 };
 
