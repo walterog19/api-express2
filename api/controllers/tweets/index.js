@@ -4,6 +4,7 @@ const createTweet = (req,res)=>{
     const tweet ={
         text: req.body.text,
         fecha : new Date(Date.now()).toLocaleString(),
+        username : req.username,
       
     }
     console.log(tweet);

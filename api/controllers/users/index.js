@@ -1,7 +1,37 @@
-const users = require("./../../models/users");
+let users = require("./../../models/users");
+const jwt  = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");// bcrypt / bcryptjs
 const config = require('./../../../config');
 const response  = require("./../../lib/response");
+
+
+const login = (req,res)=>{
+    const {username, password} = req.body;
+    console.log(req.body);
+
+    const user  = users.find(user=>user.username=== username  );
+
+    if (user) {
+        const findUser  =bcrypt.compareSync(password,user.passw);
+        
+        if (findUser){
+            // firmar Token
+            const token = jwt.sign({ username: username }, config.jwTKey);
+            res.json(response(true,[{token}]));
+
+
+        }else{
+            req.send(response(false,undefined,"Datos inválidos"));
+
+        }
+    }else{
+        req.send(response(false,undefined,"Datos inválidos"));
+
+    }
+
+   
+
+};
 
 const getUser = (req,res)=>{
     const  username =req.params.username;
@@ -49,9 +79,9 @@ const updateUser = (req,res) =>{
         
     }else{
         const findUsers = users.filter(u => u.username !== username)
-        console.log(findUsers)
-        users  = findUsers
-        users.push(user)
+        console.log(findUsers);
+        users  = findUsers;
+        users.push(user);
         res.json(response(true, users));
     }   
 
@@ -86,4 +116,4 @@ const createUser = (req,res)=>{
     }   
 };
 
-module.exports = {getUser ,deleteUser, updateUser ,getUsers,createUser};
+module.exports = {getUser ,deleteUser, updateUser ,getUsers,createUser,login};

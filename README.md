@@ -8,6 +8,8 @@ git clone https://
 3. create el .env
 ````
 PORT = 3000
+SALT =10
+API_WEATHER_KEY={openweathermap_KEY}
 ````
 
 Correr la aplicación:
