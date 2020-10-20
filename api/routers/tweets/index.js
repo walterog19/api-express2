@@ -9,6 +9,10 @@ router.route("/")
     .post(authentication,controller.createTweet)
     .get(controller.getTweets);
 
+ router.route("/stream/:username")
+    .get(controller.getTweetsStream);
+
+
 router.route("/:indexTweet")
     .get(controller.getTweet);
 
