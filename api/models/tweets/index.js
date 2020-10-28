@@ -1,7 +1,7 @@
 
 const mongoose =require("mongoose");
 const Schema = mongoose.Schema;
-const collection="twitters"; // referencia de la colleccion en base de datos
+const collection="tweets"; // referencia de la colleccion en base de datos
 
 const schema = new Schema({
     text:{         type:String , require:true  },
