@@ -18,7 +18,7 @@ const login = (req,res)=>{
         const findUser  =bcrypt.compareSync(password,user.password);        
         if (findUser){
             // firmar Token
-            const token = jwt.sign({ username: username }, config.jwTKey);
+            const token = jwt.sign({ id:user._id }, config.jwTKey);
             res.status(200).json(response(true,[{token}]));
 
 
@@ -123,18 +123,16 @@ const updateUser = (req,res) =>{
 
 };
 
-const getUsers = (req,res)=>{
+const getUsers = async (req,res)=>{
   /* res.json(response(true,users));*/  
-
-    User.find({}, ["name","userName"])
-    .then((users)=>{
-        res.json(response(true, users));
-    })
-    .catch((err) =>{
+ try{
+    const users = await User.find({}, ["name","userName"]);
+    res.json(response(true, users));
+    }catch(err){
 
         res.json(response(false,undefined, [{message:err}]));
 
-    });
+    };
 
 };
 

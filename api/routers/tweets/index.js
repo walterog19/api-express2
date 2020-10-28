@@ -8,6 +8,9 @@ const router = express.Router();
 router.route("/")
     .post(authentication,controller.createTweet)
     .get(controller.getTweets);
+    
+ router.route("/comments")
+ .post(authentication,controller.newComment);
 
  router.route("/stream/:username")
     .get(controller.getTweetsStream);

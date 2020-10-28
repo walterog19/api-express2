@@ -20,7 +20,7 @@ mongoose.connect(config.connectionDB,mongooseConfig)
 .catch((err) => console.log(err));
 
 
-
+app.use(express.static("./front-api"));
 app.use(express.json()); // recibir informaciòn en formato json
 app.use("/api",api);
 app.use("/api/v1",api);

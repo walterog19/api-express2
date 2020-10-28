@@ -6,10 +6,9 @@ const response = require("./../../lib/response");
 const createTweet = (req,res)=>{
     const tweet ={
         text: req.body.text,       
-        username : req.username,
-        dateTime : new Date(Date.now())
-      
+        user : req.id,
     }
+
     console.log(tweet);    
     const obj  = new Tweet(tweet);
     obj.save()
@@ -26,9 +25,25 @@ const createTweet = (req,res)=>{
 };
 
 const getTweets = (req,res)=>{
-    Tweet.find({})
+
+    const {page =1, limit =10}= req.query;
+    const skip  = (page - 1 ) * limit;
+
+    Tweet
+    .find({}, ["text","createdAt","user","comments"])
+    .populate("user",["name","username"])
+    .populate("comments.user",["name","username"])
+    .sort({createdAt:-1})
+    .limit(Number(limit))
+    .skip(Number(skip))
     .then((tweets)=>{
-        res.json(response(true, tweets));
+        Tweet.countDocuments((err,total)=>{
+            const totalPage = Math.ceil(total/limit);
+            const hasMore  = page<totalPage;
+            res.json(response(true, [{tweets,total,totalPage,hasMore}]));
+        });
+       
+       
     })
     .catch((err) =>{
 
@@ -69,6 +84,32 @@ const getTweetsStream = (req, res) => {
     });  
 };
 
-module.exports = {createTweet , getTweets, getTweet,getTweetsStream};
+const newComment = (req,res) =>{
+
+    const id = req.body.id;
+    const comment = {
+        comment: req.body.comment,
+        user: req.id
+    };
+    Tweet.updateOne({_id:id}, {$addToSet: {comments:comment}})
+    .then((tweet)=>{
+     
+        res.json(response(true, tweet));
+
+    })
+    .catch((err) =>{
+
+        res.json(response(false,undefined, [{message:err}]));
+
+    });
+
+   
+
+
+
+
+};
+
+module.exports = {createTweet , getTweets, getTweet,getTweetsStream,newComment};
 
 

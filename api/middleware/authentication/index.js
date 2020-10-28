@@ -9,8 +9,8 @@ const token =req.headers["x-access-token"];
 
 try{
 const decoded = jwt.verify(token,config.jwTKey);
-const username =decoded.username;
-req.username = username;
+const id =decoded.id;
+req.id = id;
 
 next();
 
