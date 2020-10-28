@@ -1,7 +1,7 @@
 const loadTweets=()=>{
     alert('entro');
 
-    const url='http://localhost:3000/api/tweets';
+    const url='https://twitter-walrog.herokuapp.com/api/tweets';
     fetch(url)
     .then(response =>response.json())
     .then(json=>{
