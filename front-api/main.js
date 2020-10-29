@@ -1,5 +1,5 @@
 const loadTweets=()=>{
-    alert('entro');
+   
 
     const url='https://twitter-walrog.herokuapp.com/api/tweets';
     fetch(url)
