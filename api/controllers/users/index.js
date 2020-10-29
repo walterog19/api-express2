@@ -16,7 +16,8 @@ const login = (req,res)=>{
         const user = users[0];
 
         const findUser  =bcrypt.compareSync(password,user.password);   
-             
+        console.log('User****');     
+        console.log(findUser);     
         if (findUser){
             // firmar Token
             const token = jwt.sign({ id:user._id }, config.jwTKey);
