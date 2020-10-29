@@ -1,6 +1,6 @@
 const mongoose =require("mongoose");
 const Schema = mongoose.Schema;
-const collection="usuarios"; // referencia de la colleccion en base de datos
+const collection="user"; // referencia de la colleccion en base de datos
 
 const schema = new Schema({
     name:{         type:String , require:true  },
