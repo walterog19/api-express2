@@ -11,11 +11,12 @@ const login = (req,res)=>{
     
 
 
-    User.find({username : username},["password"])
+    User.find({username : username})
     .then((users)=>{
         const user = users[0];
 
-        const findUser  =bcrypt.compareSync(password,user.password);        
+        const findUser  =bcrypt.compareSync(password,user.password);   
+             
         if (findUser){
             // firmar Token
             const token = jwt.sign({ id:user._id }, config.jwTKey);
