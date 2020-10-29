@@ -8,7 +8,7 @@ const response  = require("./../../lib/response");
 
 const login = (req,res)=>{
     const {username, password} = req.body;
-    console.log(req.body);
+    
 
 
     User.find({username : username},["password"])
