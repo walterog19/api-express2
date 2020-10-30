@@ -10,10 +10,10 @@ const login = (req,res)=>{
     const {username, password} = req.body;
     
 
-
     User.find({username : username})
     .then((users)=>{
         const user = users[0];
+        console.log(users);
 
         const findUser  =bcrypt.compareSync(password,user.password);   
         console.log('User****');     
@@ -30,7 +30,7 @@ const login = (req,res)=>{
         }
     })
     .catch((err) =>{
-
+        console.log('Error '+err);
         res.json(response(false,undefined, [{message:err}]));
 
     });
@@ -51,7 +51,7 @@ const getUser = (req,res)=>{
         res.json(response(true,[findUser]));
     }   */
 
-    User.find({username : username}, ["name","userName"])
+    User.find({username : username}, ["name","username"])
     .then((user)=>{
         res.json(response(true, user));
 
@@ -128,7 +128,7 @@ const updateUser = (req,res) =>{
 const getUsers = async (req,res)=>{
   /* res.json(response(true,users));*/  
  try{
-    const users = await User.find({}, ["name","userName"]);
+    const users = await User.find({}, ["name","username"]);
     res.json(response(true, users));
     }catch(err){
 
@@ -146,7 +146,7 @@ const createUser = (req,res)=>{
 
     const user ={
         name: req.body.name,
-        userName :req.body.username,
+        username :req.body.username,
         email :req.body.email,
         password :claveEncriptada,
     }
