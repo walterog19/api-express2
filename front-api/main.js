@@ -57,8 +57,11 @@ const createUser = () => {
 
     postData(url, dataUser)
         .then(data => {
-            
-            alert("El usuario "+data.username+" se guardo correctamente!"); // JSON data parsed by `data.json()` call
+            if (data.success){
+                alert("El usuario "+data.username+" se guardo correctamente!"); // JSON data parsed by `data.json()` call
+            }else{
+                alert(data.message);
+            }
         })
         .catch(error => alert('No se pudo guardar el usuario:' + error));
 
