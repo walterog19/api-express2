@@ -8,8 +8,6 @@ const loadTweets = () => {
         .then(response => response.json())
         .then(json => {
 
-
-
             const tweets = json.items[0].tweets;
             let texto = [];
             tweets.map(t => texto.push(t.user.name + "<br/>" + t.text + "<br>" + t.createdAt));

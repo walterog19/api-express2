@@ -1,15 +1,15 @@
-const mongoose =require("mongoose");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const collection="user"; // referencia de la colleccion en base de datos
+const collection = "users"; //referencia la colección de la base de datos
 
 const schema = new Schema({
-    name:{         type:String , require:true  },
-    username:{     type:String , require:true , lowercase:true,trim:true     },
-    email:{        type:String , require:true , lowercase:true,trim:true   },
-    password:{      type:String , require:true    }
-}, {timestamps:true});
+    name: { type: String, required: true },
+    username: { type: String, required: true, lowercase: true, trim: true },
+    email: { type: String, required: true, lowercase: true, trim: true },
+    password: { type: String, required: true },
+}, { timestamps: true });
 
-const model =  mongoose.model(collection,schema)
+const model = mongoose.model(collection, schema);
+
 module.exports = model;
-
 

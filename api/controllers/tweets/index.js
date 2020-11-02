@@ -46,8 +46,8 @@ const getTweets = (req,res)=>{
        
     })
     .catch((err) =>{
-
-        res.json(response(false,undefined, [{message:err}]));
+        console.log(err);
+        res.json(response(false,undefined, err));
 
     });
    
