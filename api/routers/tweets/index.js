@@ -12,6 +12,10 @@ router.route("/")
  router.route("/comments")
  .post(authentication,controller.newComment);
 
+ router.route("/likes")
+        .post(authentication, controller.newLike);
+
+
  router.route("/stream/:username")
     .get(controller.getTweetsStream);
 

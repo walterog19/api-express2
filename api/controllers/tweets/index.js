@@ -30,7 +30,7 @@ const getTweets = (req,res)=>{
     const skip  = (page - 1 ) * limit;
 
     Tweet
-    .find({}, ["text","createdAt","user","comments"])
+    .find({}, ["text","createdAt","user","likes","comments"])
     .populate("user",["name","username"])
     .populate("comments.user",["name","username"])
     .sort({createdAt:-1})
@@ -51,6 +51,17 @@ const getTweets = (req,res)=>{
 
     });
    
+};
+
+const newLike = (req, res) => {
+    const id = req.body.id;
+    Tweet.updateOne({ _id: id}, { $inc: { likes: 1 } } ) 
+    .then((tweets)=>{
+        res.status(200).json(response(true, tweets));
+    })
+    .catch((err)=>{
+        res.json(response(false, undefined, err));
+    });
 };
 
 const getTweet = (req,res)=>{
@@ -110,6 +121,6 @@ const newComment = (req,res) =>{
 
 };
 
-module.exports = {createTweet , getTweets, getTweet,getTweetsStream,newComment};
+module.exports = {createTweet , getTweets, getTweet,getTweetsStream,newComment,newLike};
 
 
