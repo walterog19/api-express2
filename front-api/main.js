@@ -36,7 +36,7 @@ const loadWeather = () => {
 
 
         })
-        .catch(error => alert('No se pudo cargar los datos error:' + error));
+        .catch(error => alert('No se pudo cargar los datos del clima error:' + error));
 
 }
 
