@@ -21,6 +21,26 @@ const loadTweets = () => {
 }
 
 
+const loadWeather = () => {
+
+
+    const url = 'https://twitter-walrog.herokuapp.com/api/weather/Pereira';
+    fetch(url)
+        .then(response => response.json())
+        .then(json => {
+
+            const weather = json.items[0].weather;
+            
+            document.getElementById('weather').innerHTML = 'El clima actual es:'+weather+' grados';
+
+
+
+        })
+        .catch(error => alert('No se pudo cargar los datos error:' + error));
+
+}
+
+
 async function postData(url = '', data = {}) {
     // Opciones por defecto estan marcadas con un *
     const response = await fetch(url, {
