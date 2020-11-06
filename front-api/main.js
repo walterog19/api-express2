@@ -3,7 +3,7 @@
 const loadTweets = () => {
 
 
-    const url = 'https://twitter-walrog.herokuapp.com/api/tweets';
+    const url = '/api/tweets';
     fetch(url)
         .then(response => response.json())
         .then(json => {
