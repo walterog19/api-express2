@@ -18,8 +18,8 @@ const login = (req, res) => {
       if (findUser) {
         // firmar Token
         const token = jwt.sign(
-          { id: user._id, name: user.name },
-          config.jwTKey
+          { id: user.id, name: user.name },
+          'my-secret-key'
         );
         res.status(200).json(response(true, [{ token }]));
       } else {
