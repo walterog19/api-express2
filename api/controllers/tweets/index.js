@@ -1,70 +1,60 @@
-const Twitter = require("twitter");
-const Tweet = require("./../../models/tweets");
-const config = require("../../../config");
-const response = require("./../../lib/response");
+const Twitter = require('twitter');
+const Tweet = require('./../../models/tweets');
+const config = require('../../../config');
+const response = require('./../../lib/response');
 
-const createTweet = (req,res)=>{
-    const tweet ={
-        text: req.body.text,       
-        user : req.id,
-    }
-
-    console.log(tweet);    
-    const obj  = new Tweet(tweet);
-    obj.save()
-    .then((tweet)=>{
-
-        res.json(response(true, [tweet]))
-
+const createTweet = (req, res) => {
+  const tweet = {
+    content: req.body.content,
+    user: req.id,
+  };
+  const obj = new Tweet(tweet);
+  obj
+    .save()
+    .then((tweet) => {
+      res.json(response(true, [tweet]));
     })
-    .catch((err)=>{
-        res.json(response(false,undefined, [{message:err}]));
-    })   
-
-        
+    .catch((err) => {
+      res.json(response(false, undefined, err));
+    });
 };
 
-const getTweets = (req,res)=>{
+const getTweets = (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
+  const skip = (page - 1) * limit;
 
-    const {page =1, limit =10}= req.query;
-    const skip  = (page - 1 ) * limit;
-
-    Tweet
-    .find({}, ["text","createdAt","user","likes","comments"])
-    .populate("user",["name","username"])
-    .populate("comments.user",["name","username"])
-    .sort({createdAt:-1})
+  Tweet.find({}, ['content', 'createdAt', 'user', 'likes', 'comments'])
+    .populate('user', ['name', 'username'])
+    .populate('comments.user', ['name', 'username'])
+    .sort({ createdAt: -1 })
     .limit(Number(limit))
-    .skip(Number(skip))
-    .then((tweets)=>{
-        Tweet.countDocuments((err,total)=>{
-            const totalPage = Math.ceil(total/limit);
-            const hasMore  = page<totalPage;
-            res.json(response(true, [{tweets,total,totalPage,hasMore}]));
-        });
-       
-       
+    .skip(skip)
+    .then((tweets) => {
+      Tweet.countDocuments((err, total) => {
+        const totalPages = Math.ceil(total / limit);
+        const hasMore = page < totalPages;
+        res
+          .status(200)
+          .json(response(true, [{ tweets, total, totalPages, hasMore }]));
+      });
     })
-    .catch((err) =>{
-        console.log(err);
-        res.json(response(false,undefined, err));
-
+    .catch((err) => {
+      res.json(response(false, undefined, err));
     });
-   
 };
 
 const newLike = (req, res) => {
-    const id = req.body.id;
-    Tweet.updateOne({ _id: id}, { $inc: { likes: 1 } } ) 
-    .then((tweets)=>{
-        res.status(200).json(response(true, tweets));
+  const id = req.body.id;
+  Tweet.updateOne({ _id: id }, { $inc: { likes: 1 } })
+    .then((tweets) => {
+      res.status(200).json(response(true, tweets));
     })
-    .catch((err)=>{
-        res.json(response(false, undefined, err));
+    .catch((err) => {
+      res.json(response(false, undefined, err));
     });
 };
 
-const getTweet = (req,res)=>{
+/*const getTweet = (req,res)=>{
     const  index  =req.params.indexTweet;
     console.log(index);
     Tweet.find({_id : index})
@@ -77,50 +67,70 @@ const getTweet = (req,res)=>{
         res.json(response(false,undefined, [{message:err}]));
 
     });
+};*/
+
+const getTweet = (req, res) => {
+  const id = req.params.id;
+  Tweet.find({ _id: id }, ['content', 'createdAt', 'user', 'likes', 'comments'])
+    .populate('user', ['name', 'username'])
+    .populate('comments.user', ['name', 'username'])
+    .sort({ createdAt: -1 })
+    .then((tweets) => {
+      res.status(200).json(response(true, tweets));
+    })
+    .catch((err) => {
+      res.json(response(false, undefined, err));
+    });
 };
 
 const getTweetsStream = (req, res) => {
-    const username = req.params.username;
-    const client = new Twitter({
-        consumer_key: config.twitter.consumerKey,
-        consumer_secret: config.twitter.consumerSecret,
-        access_token_key: config.twitter.accessTokenKey,
-        access_token_secret: config.twitter.accessTokenSecret
-      });
-    client.get("statuses/user_timeline", {screen_name: username}, (err, tweets, reponse) => {
-        if (err) 
-            res.status(500).json(response(false, undefined, [ {message: "Ocurrió un error:"+err}]));
-        else
-            res.status(200).json(response(true, tweets));
-    });  
+  const username = req.params.username;
+  const client = new Twitter({
+    consumer_key: config.twitter.consumerKey,
+    consumer_secret: config.twitter.consumerSecret,
+    access_token_key: config.twitter.accessTokenKey,
+    access_token_secret: config.twitter.accessTokenSecret,
+  });
+  client.get(
+    'statuses/user_timeline',
+    { screen_name: username },
+    (err, tweets, reponse) => {
+      if (err)
+        res
+          .status(500)
+          .json(
+            response(false, undefined, [{ message: 'Ocurrió un error:' + err }])
+          );
+      else res.status(200).json(response(true, tweets));
+    }
+  );
 };
 
-const newComment = (req,res) =>{
-
-    const id = req.body.id;
-    const comment = {
-        comment: req.body.comment,
-        user: req.id
+const newComment = (req, res) => {
+  const { id: user } = req;
+  const { comment, id } = req.body;
+  if (comment.length > 0) {
+    const comments = {
+      comment,
+      user,
     };
-    Tweet.updateOne({_id:id}, {$addToSet: {comments:comment}})
-    .then((tweet)=>{
-     
-        res.json(response(true, tweet));
-
-    })
-    .catch((err) =>{
-
-        res.json(response(false,undefined, [{message:err}]));
-
-    });
-
-   
-
-
-
-
+    Tweet.updateOne({ _id: id }, { $addToSet: { comments } })
+      .then((tweets) => {
+        res.status(200).json(response(true, tweets));
+      })
+      .catch((err) => {
+        res.json(response(false, undefined, err));
+      });
+  } else {
+    res.json(response(false, undefined, 'El comentario no puede estar vacío'));
+  }
 };
 
-module.exports = {createTweet , getTweets, getTweet,getTweetsStream,newComment,newLike};
-
-
+module.exports = {
+  createTweet,
+  getTweets,
+  getTweet,
+  getTweetsStream,
+  newComment,
+  newLike,
+};
