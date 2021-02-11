@@ -1,23 +1,8 @@
 const Twitter = require('twitter');
 const Tweet = require('./../../models/tweets');
-const config = require('../../../config');
+const lib = require('./../../lib/dates');
 const response = require('./../../lib/response');
-
-const createTweet = (req, res) => {
-  const tweet = {
-    content: req.body.content,
-    user: req.id,
-  };
-  const obj = new Tweet(tweet);
-  obj
-    .save()
-    .then((tweet) => {
-      res.json(response(true, [tweet]));
-    })
-    .catch((err) => {
-      res.json(response(false, undefined, err));
-    });
-};
+const config = require('../../../config');
 
 const getTweets = (req, res) => {
   const { page = 1, limit = 10 } = req.query;
@@ -43,6 +28,26 @@ const getTweets = (req, res) => {
     });
 };
 
+const newComment = (req, res) => {
+  const { id: user } = req;
+  const { comment, id } = req.body;
+  if (comment.length > 0) {
+    const comments = {
+      comment,
+      user,
+    };
+    Tweet.updateOne({ _id: id }, { $addToSet: { comments } })
+      .then((tweets) => {
+        res.status(200).json(response(true, tweets));
+      })
+      .catch((err) => {
+        res.json(response(false, undefined, err));
+      });
+  } else {
+    res.json(response(false, undefined, 'El comentario no puede estar vacío'));
+  }
+};
+
 const newLike = (req, res) => {
   const id = req.body.id;
   Tweet.updateOne({ _id: id }, { $inc: { likes: 1 } })
@@ -54,20 +59,21 @@ const newLike = (req, res) => {
     });
 };
 
-/*const getTweet = (req,res)=>{
-    const  index  =req.params.indexTweet;
-    console.log(index);
-    Tweet.find({_id : index})
-    .then((tweet)=>{
-        res.json(response(true, tweet));
-
+const newTweet = (req, res) => {
+  const tweet = {
+    content: req.body.content,
+    user: req.id,
+  };
+  const obj = new Tweet(tweet);
+  obj
+    .save()
+    .then((tweet) => {
+      res.json(response(true, [tweet]));
     })
-    .catch((err) =>{
-
-        res.json(response(false,undefined, [{message:err}]));
-
+    .catch((err) => {
+      res.json(response(false, undefined, err));
     });
-};*/
+};
 
 const getTweet = (req, res) => {
   const id = req.params.id;
@@ -95,41 +101,19 @@ const getTweetsStream = (req, res) => {
     'statuses/user_timeline',
     { screen_name: username },
     (err, tweets, reponse) => {
-      if (err)
+      if (err) {
         res
           .status(500)
-          .json(
-            response(false, undefined, [{ message: 'Ocurrió un error:' + err }])
-          );
-      else res.status(200).json(response(true, tweets));
+          .json(response(false, undefined, [{ message: 'Ocurrió un error' }]));
+      } else res.status(200).json(response(true, tweets));
     }
   );
 };
 
-const newComment = (req, res) => {
-  const { id: user } = req;
-  const { comment, id } = req.body;
-  if (comment.length > 0) {
-    const comments = {
-      comment,
-      user,
-    };
-    Tweet.updateOne({ _id: id }, { $addToSet: { comments } })
-      .then((tweets) => {
-        res.status(200).json(response(true, tweets));
-      })
-      .catch((err) => {
-        res.json(response(false, undefined, err));
-      });
-  } else {
-    res.json(response(false, undefined, 'El comentario no puede estar vacío'));
-  }
-};
-
 module.exports = {
-  createTweet,
   getTweets,
   getTweet,
+  newTweet,
   getTweetsStream,
   newComment,
   newLike,
